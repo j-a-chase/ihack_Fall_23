@@ -97,13 +97,16 @@ class Reader:
         Returns: None
         '''
         # send request and store requests.Request object
-        data = requests.get(self.api + f'courses/{course_id}/assignments?&bucket=upcoming&order_by=due_at&access_token={self.token}').text
+        data = requests.get(self.api + f'courses/{course_id}/assignments?include[]=submission&bucket=upcoming&order_by=due_at&access_token={self.token}').text
         
         # parse JSON data into list of dictionaries
         parsed = json.loads(data)
 
         # for each upcoming assignment
         for x in parsed:
+
+            # exclude upcoming assignments that have already been submitted
+            if x['submission']['submitted_at'] is not None: continue
 
             # convert due date to current timezone
             due_date = datetime.strptime(x['due_at'], f'%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).astimezone(tz=None)
