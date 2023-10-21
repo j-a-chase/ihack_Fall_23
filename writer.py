@@ -41,6 +41,7 @@ class Writer():
         self.cursor = self.conn.cursor()
         self.d_ids = []
         self.keys = []
+        self.days_ago = 14
 
     def read_user_info(self) -> None:
         '''
@@ -50,11 +51,16 @@ class Writer():
 
         Returns: None
         '''
-        self.cursor.execute(f'SELECT discord_id, apikey FROM bot_settings')
+        self.cursor.execute(f'SELECT discord_id, apikey, pastgrades FROM bot_settings')
         response = self.cursor.fetchall()
         for row in response:
             self.d_ids.append(row[0])
             self.keys.append(row[1])
+            
+            try:
+                self.days_ago = int(row[2])
+            except (TypeError, ValueError):
+                self.days_ago = 14
 
     def print_table_columns(self, table_name: str) -> None:
         '''
