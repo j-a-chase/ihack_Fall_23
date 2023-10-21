@@ -13,7 +13,9 @@ from reader import Reader as R
 
 def main() -> None:
     print()
-    token = input("Token: ")
+    while True:
+        token = input("Token: ")
+        if len(token) == 70: break
     r = R(token)
     for cid in r.get_course_ids():
         r.get_upcoming_assignments(cid)
