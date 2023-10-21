@@ -36,8 +36,4 @@ class Reader:
                 ]
             except KeyError: pass
 
-if __name__ == '__main__':
-    token = input('Token: ')
-    r = Reader(token)
-    print(r.courses)
-    # assert False, 'This is a class file. Please import into another file.'
+if __name__ == '__main__': assert False, 'This is a class file. Please import into another file.'
