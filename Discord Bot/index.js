@@ -162,20 +162,27 @@ client.on('messageCreate', message => {
                     })
                 break;
                 case 'grades':
-                    db.loadGrades(message.author.id).then(r => {
-                        let embed = embedMSG.school.grades,
-                            fieldArr = [];
-                        for (let x=0; x<r.length; x++) {
-                            if (r[x].course_letter_grade == null) r[x].course_letter_grade = "N/A";
-                            if (r[x].course_score == null) r[x].course_score = "N/A";
-                            fieldArr.push({
-                                name: `**${r[x].course_name}: ${r[x].course_letter_grade}**`,
-                                value: `Computed Score: ${r[x].course_score}`,
-                                inline: true
+                    db.showGrades(message.author.id).then(res => {
+                        if (res[0].showgrades == 'NO') {
+                            message.channel.send({embeds: embedMSG.school.noGradesPerm})
+                        } else {
+                            db.loadGrades(message.author.id).then(r => {
+                                let embed = embedMSG.school.grades,
+                                    fieldArr = [];
+                                for (let x=0; x<r.length; x++) {
+                                    if (r[x].course_letter_grade == null) r[x].course_letter_grade = "N/A";
+                                    if (r[x].course_score == null) r[x].course_score = "N/A";
+                                    fieldArr.push({
+                                        name: `**${r[x].course_name}: ${r[x].course_letter_grade}**`,
+                                        value: `Computed Score: ${r[x].course_score}`,
+                                        inline: true
+                                    })
+                                }
+                                embed.fields = fieldArr;
+                                message.channel.send({embeds: [embed]});
                             })
                         }
-                        embed.fields = fieldArr;
-                        message.channel.send({embeds: [embed]});
+                        
                     })
                 break;
             }

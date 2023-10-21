@@ -459,6 +459,19 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
         },
+        noGradesPerm: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Whoops!',
+            description: 'Unable to display your grades. Check your settings.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
     }
 }
 module.exports= { embedMSG ,updateSettings};
