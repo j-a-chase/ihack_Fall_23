@@ -9,8 +9,14 @@
 ######################################################################################################################################################
 
 # imports
+from reader import Reader as R
 
-def main() -> None: pass
+def main() -> None:
+    print()
+    token = input("Token: ")
+    r = R(token)
+    print()
+    for k, v in r.courses.items(): print(f'{k}: {v}\n')
+    print()
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__main__': main()
