@@ -265,63 +265,11 @@ const embedMSG = {
     school: {
         recentGrades: {
             color: userSettings.embedColor,
-            title: 'Canvas LMS | Recent Grades ',
-            description: 'A list of grades received in the last 14 days.',
+            title: 'Canvas LMS | Error',
+            description: 'Unable to display your recent grades. Check your grade visibility settings.',
             thumbnail: {
                 url: config.logoURL,
             },
-            fields: [
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                },
-                { 
-                    name: '**COURSE NAME | COURSE CODE**', 
-                    value: `GRADE`,
-                    inline: true,
-                }
-            ],
             timestamp: new Date().toISOString(),
             footer: {
                 text: 'A BYU-Idaho Hackathon Project',
