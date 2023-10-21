@@ -77,8 +77,9 @@ client.on('messageCreate', message => {
                             message.channel.send({embeds: [embedMSG.settings.setKey]});
                         })
                     } else if (args[1] == "set" && args[2] == "color" && args[3]) {
-                        // Add checks to make sure the API key is valid & save the keyvalue pair in the database.
-                        message.channel.send({embeds: [embedMSG.settings.setColor]});
+                        db.setColor(message.author.id, args[3]).then(r => {
+                            message.channel.send({embeds: [embedMSG.settings.setColor]});
+                        })
                     } else if (args[1] == "set" && args[2] == "links" && args[3]) {
                         if (args[3] == "show") {
                             db.linkVisibility(message.author.id, "YES").then(r => {
@@ -123,7 +124,53 @@ client.on('messageCreate', message => {
                     }
                 break;
                 case 'recentgrades':
-                    message.channel.send({embeds: [embedMSG.school.recentGrades]})
+                    db.showGradeHistory(message.author.id).then(res => {
+                        if (res[0].showgrades == 'NO') {
+                            message.channel.send({embeds: [embedMSG.school.recentGrades]})
+                        } else {
+                            db.pastAssignments(message.author.id).then (r => {
+                                let embed = embedMSG.school.recentGrades,
+                                    fieldArr = [];
+                                for (let x=0; x<r.length; x++) {
+                                    let v = r[x].past_assignments.split("\n");
+                                    
+                                    for (let y=0; y<v.length; y++) {
+                                        v[y] = v[y].split("_");
+                                        if (v[y] == '') {
+                                            v.pop(y);
+                                            y--;
+                                        }
+                                        
+                                    }
+                                    
+                                    for (let g=0; g<v.length;g++) {
+                                        let name = v[g][0],
+                                            link = v[g][1],
+                                            sub_score = v[g][2],
+                                            total_poss_pts = v[g][3],
+                                            mean_score = v[g][4];   
+                                        
+                                        if (sub_score == 'None') sub_score="Not Graded ";
+                                        let str = `\n**${name}** \n__Grade: ${sub_score}/${total_poss_pts}__\n __Mean Score: ${mean_score}__\n${link}`;
+                                        if (r[x].past_assignments == '') r[x].past_assignments = "No assignments from the past `"+res[0].pastgrades+"` days.";
+                                        if (!name) str = 'No past assignments!';
+                                        if (res[0].showlinks == 'NO') str = `\n**${name}** \n__Grade: ${sub_score}/${total_poss_pts}__\n __Mean Score: ${mean_score}__`;
+                                        
+                                        fieldArr.push({
+                                            name: `**${r[x].course_name} | ${r[x].course_code}**`,
+                                            value: str
+                                        })
+                                    }
+                                }
+                                embed.title = 'Canvas LMS | Recently Graded Assignments';
+                                embed.description = `A list of grades received in the last \`${res[0].pastgrades}\` days.`;
+                                embed.fields = fieldArr;
+
+                                message.channel.send({embeds: [embed]});
+
+                            })
+                        }
+                    })
                 break;
                 case 'upcoming':
                     db.showLink(message.author.id).then(res => {
