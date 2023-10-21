@@ -64,7 +64,7 @@ client.on('messageCreate', message => {
         if (message.author.bot == true) return;
         db.loadSettings(message.author.id).then(settings => {
 
-            let assignmentNotifier = cron.schedule('*/10 * * * * *', () => {
+            let assignmentNotifier = cron.schedule('*/1 * * * *', () => {
                 console.log('Running a job for :' + message.author.id);
                 if (settings.dnd == "ON") {
                     db.showLink(message.author.id).then(res => {
