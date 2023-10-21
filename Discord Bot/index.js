@@ -38,6 +38,8 @@ setTimeout(() => {
   }
 }, 1000);
 
+
+
 const client = new Client({ 
     intents: [
         GatewayIntentBits.Guilds,
@@ -62,55 +64,54 @@ client.on('messageCreate', message => {
         args = args.split(' ');
         const command = args[0];
         if (message.author.bot == true) return;
-        db.loadSettings(message.author.id).then(settings => {
-
-            let assignmentNotifier = cron.schedule('*/1 * * * *', () => {
-                console.log('Running a job for :' + message.author.id);
-                if (settings.dnd == "ON") {
-                    db.showLink(message.author.id).then(res => {
-                            db.loadUpcoming(message.author.id).then(r => {
-                                let embed = embedMSG.assignmentNotifier,
-                                    fieldArr = [];
-                                    embed.color = settings.color;
-                                for (let x=0; x<r.length; x++) {
-                                    let v = r[x].upcoming_assignments.split("\n");
-                                    
-                                    for (let y=0; y<v.length; y++) {
-                                        v[y] = v[y].split("_");
-                                        if (v[y] == '') {
-                                            v.pop(y);
-                                            y--;
-                                        }
-                                        
+        const notifier = cron.schedule('*/10 * * * * *', () => {
+            db.loadSettings(message.author.id).then(settings => {
+            console.log('Running a job for :' + message.author.id + " DND SETTINGS: " + settings[0].dnd);
+            if (settings[0].dnd == "OFF" && settings[0].apikey != 'NONE') {
+                db.showLink(message.author.id).then(res => {
+                        db.loadUpcoming(message.author.id).then(r => {
+                            let embed = embedMSG.assignmentNotifier,
+                                fieldArr = [];
+                                embed.color = settings[0].color;
+                            for (let x=0; x<r.length; x++) {
+                                let v = r[x].upcoming_assignments.split("\n");
+                                
+                                for (let y=0; y<v.length; y++) {
+                                    v[y] = v[y].split("_");
+                                    if (v[y] == '') {
+                                        v.pop(y);
+                                        y--;
                                     }
                                     
-                                    for (let g=0; g<v.length;g++) {
-                                        let name = v[g][0],
-                                            date = v[g][1],
-                                            link = v[g][2],
-                                            str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
-                                        if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
-                                        if (!name) str = 'No upcoming assignments :smile:';
-                                        if (res[0].showlinks == 'NO') str = `\n**${name}** \n*__DUE: ${date}__*`;
-                                        fieldArr.push({
-                                            name: `**${r[x].course_name} | ${r[x].course_code}**`,
-                                            value: str
-                                        })
-                                    }
                                 }
-                                embed.fields = fieldArr;
-                                message.channel.send({embeds: [embed]});
-                            })
-                })
-                } else {
-                    console.log('User has DND enabled.');
-                }            
-                
-            }, {
-                scheduled: true,
-                timezone: "America/Denver"
+                                
+                                for (let g=0; g<v.length;g++) {
+                                    let name = v[g][0],
+                                        date = v[g][1],
+                                        link = v[g][2],
+                                        str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
+                                    if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
+                                    if (!name) str = 'No upcoming assignments :smile:';
+                                    if (res[0].showlinks == 'NO') str = `\n**${name}** \n*__DUE: ${date}__*`;
+                                    fieldArr.push({
+                                        name: `**${r[x].course_name} | ${r[x].course_code}**`,
+                                        value: str
+                                    })
+                                }
+                            }
+                            embed.fields = fieldArr;
+                            message.channel.send({embeds: [embed]});
+                        })
             })
-
+            } else {
+                console.log('User has DND enabled.');
+            }  
+            }) 
+        }, {
+            scheduled: true,
+            timezone: "America/Denver"
+        })
+        db.loadSettings(message.author.id).then(settings => {
             settings = settings[0];
             if (typeof settings.color == 'string') settings.color = parseInt(settings.color,16);
             if (message.guildId != null) {
@@ -120,6 +121,7 @@ client.on('messageCreate', message => {
                     break;
                 }
             } else if (message.guildId == null) {
+                notifier.stop();
                 switch (command) {
                     case 'help':
                         let embed = embedMSG.direct.helpEmbed;
@@ -132,8 +134,8 @@ client.on('messageCreate', message => {
                                 let embed = embedMSG.settings.setKey;
                                 embed.color = settings.color;
                                 message.channel.send({embeds: [embed]});
-                                assignmentNotifier.stop();
-                                assignmentNotifier.start();
+                                notifier.stop();
+                                notifier.start();
                             })
                         } else if (args[1] == "set" && args[2] == "color" && args[3]) {
                             db.setColor(message.author.id, args[3]).then(r => {
@@ -374,29 +376,35 @@ client.on('messageCreate', message => {
                             })
                         }
                     break;
-                    case 'notifications':
+                    
                         let opt = args[1];
                         if (!opt) opt = '';
                         if (opt.toLowerCase() == 'on') {
-                            db.dndToggle(message.author.id, 'ON').then(r => {
-                                let embed = embedMSG.dnd.dndToggle;
-                                embed.color = settings.color;
-                                embed.description = `Your Do Not Disturb settings have been toggled: \`ON\`.`;
-                                message.channel.send({embeds: [embed]})
-                            })
-                        } else if (opt.toLowerCase() == 'off') {
+                            notifier.stop();
                             db.dndToggle(message.author.id, 'OFF').then(r => {
                                 let embed = embedMSG.dnd.dndToggle;
                                 embed.color = settings.color;
-                                embed.description = `Your Do Not Disturb settings have been toggled: \`OFF\`.`;
+                                embed.description = `Your notifications have been toggled: \`ON\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        } else if (opt.toLowerCase() == 'off') {
+                            notifier.stop();
+                            db.dndToggle(message.author.id, 'ON').then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your notifications have been toggled: \`OFF\`.`;
                                 message.channel.send({embeds: [embed]})
                             })
                         } else {
                             let embed = embedMSG.dnd.dndToggle;
                             embed.color = settings.color;
-                            embed.description = `Your Do Not Disturb settings have NOT been changed.`;
+                            embed.description = `Your notification settings have NOT been changed.`;
                             message.channel.send({embeds: [embed]})
                         }
+                    break;
+                    case 'cronstop':
+                        notifier.stop();
+                        message.channel.send('Ended a CRON notification task if it existed for you.');
                     break;
                 }
             } else return;          
@@ -404,5 +412,6 @@ client.on('messageCreate', message => {
         
     } 
 });
+
 
 client.login(config.token);
