@@ -12,6 +12,7 @@
 from reader import Reader as R
 from writer import Writer as W
 import re
+import time
 
 def main() -> None:
     '''
@@ -52,4 +53,7 @@ def main() -> None:
     w.close_connection()
 
 # run program
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    while True:
+        main()
+        time.sleep(3600)
