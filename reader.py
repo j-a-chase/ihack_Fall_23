@@ -12,7 +12,7 @@
 import requests
 import json
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Dict
 
 class Reader:
     def __init__(self, token: str='') -> None:
@@ -31,7 +31,7 @@ class Reader:
         self.token = token
 
         # holds course information for the student
-        self.courses = {}
+        self._courses = {}
 
         # will hold list of course ids
         self._ids = None
@@ -44,7 +44,7 @@ class Reader:
     '''
     def get_course_ids(self) -> List[str]:
         '''
-        Returns course ids
+        Returns course ids.
 
         Parameters: None
 
@@ -52,6 +52,17 @@ class Reader:
             - a list containing the user's course ids as strings.
         '''
         return self._ids
+    
+    def get_courses_dict(self) -> Dict:
+        '''
+        Get courses dictionary.
+
+        Parameters: None
+
+        Returns:
+            - a dictionary holds all course information for a student
+        '''
+        return self._courses
     
     '''
     Class Methods
@@ -78,7 +89,7 @@ class Reader:
                 if 'name' not in x or x['grading_standard_id'] is None: continue
 
                 # grab course information and store in courses dictionary
-                self.courses[x['id']] = [
+                self._courses[x['id']] = [
                     x['name'],
                     x['course_code'],
                     x['course_format'],
@@ -93,7 +104,7 @@ class Reader:
             except KeyError as e: print(f'{e} ---\n')
 
         # store course ids as a list
-        self._ids = list(self.courses.keys())
+        self._ids = list(self._courses.keys())
 
     def get_upcoming_assignments(self, course_id: str) -> None:
         '''
@@ -122,7 +133,7 @@ class Reader:
             due_date = ' '.join(due_date)
 
             # append the assignment to the upcoming assignments dictionary inside the course
-            self.courses[course_id][-1]['upcoming_assignments'].append([x['name'], due_date, x['html_url']])
+            self._courses[course_id][-1]['upcoming_assignments'].append([x['name'], due_date, x['html_url']])
 
     def get_past_assignments(self, course_id: str, days_back: int) -> None:
         '''
@@ -149,7 +160,7 @@ class Reader:
         
         def get_month_days(m: int, y: int) -> int:
             '''
-            Determines how many days are in the given month
+            Determines how many days are in the given month.
 
             Parameters:
                 - m: an integer indicating the current month
@@ -189,13 +200,13 @@ class Reader:
 
             # if score_statistics is not enabled, simply append empty list
             try:
-                self.courses[course_id][-1]['past_assignments'].append([x['name'],
+                self._courses[course_id][-1]['past_assignments'].append([x['name'],
                                                                         x['html_url'],
                                                                         x['submission']['score'],
                                                                         x['points_possible'],
                                                                         x['score_statistics']['mean']])
             except KeyError:
-                self.courses[course_id][-1]['past_assignments'].append([x['name'],
+                self._courses[course_id][-1]['past_assignments'].append([x['name'],
                                                                         x['html_url'],
                                                                         x['submission']['score'],
                                                                         x['points_possible'],

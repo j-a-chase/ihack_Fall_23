@@ -39,9 +39,49 @@ class Writer():
 
         # create necessary variables
         self.cursor = self.conn.cursor()
-        self.d_ids = []
-        self.keys = []
-        self.days_ago = 14
+        self._d_ids = []
+        self._keys = []
+        self._days_ago = 14
+
+    '''
+    Getters
+    '''
+    def get_discord_ids(self) -> List[str]:
+        '''
+        Get discord ids list.
+
+        Parameters: None
+
+        Returns:
+            - a list of strings containing discord ids
+        '''
+        return self._d_ids
+    
+    def get_keys(self) -> List[str]:
+        '''
+        Get access tokens.
+
+        Parameters: None
+
+        Returns:
+            - a list of strings containing user access tokens
+        '''
+        return self._keys
+
+    def get_days_ago(self) -> int:
+        '''
+        Returns the _days_ago parameter.
+
+        Parameters: None
+
+        Returns:
+            - an integer containing the days ago value
+        '''
+        return self._days_ago
+
+    '''
+    Methods
+    '''
 
     def read_user_info(self) -> None:
         '''
@@ -54,25 +94,13 @@ class Writer():
         self.cursor.execute(f'SELECT discord_id, apikey, pastgrades FROM bot_settings')
         response = self.cursor.fetchall()
         for row in response:
-            self.d_ids.append(row[0])
-            self.keys.append(row[1])
+            self._d_ids.append(row[0])
+            self._keys.append(row[1])
             
             try:
-                self.days_ago = int(row[2])
+                self._days_ago = int(row[2])
             except (TypeError, ValueError):
-                self.days_ago = 14
-
-    def print_table_columns(self, table_name: str) -> None:
-        '''
-        Testing function to get table columns, will probably delete.
-
-        Parameters:
-            - table_name: a string containing the table name
-
-        Returns: None
-        '''
-        self.cursor.execute(f"SHOW columns FROM {table_name}")
-        print(self.cursor.fetchall())
+                self._days_ago = 14
 
     def write_info(self, courses: Dict, course_ids: List[str], discord_id: str) -> None:
         '''
@@ -118,30 +146,6 @@ class Writer():
                 data = (course[3], course[4], u_assignments, p_assignments, cid, discord_id)
                 self.cursor.execute(string, data)
                 self.conn.commit()
-
-    def get_table_data(self) -> None:
-        '''
-        Return api table data.
-
-        Parameters: None
-
-        Returns: None
-        '''
-        self.cursor.execute("SELECT * FROM api")
-        result = self.cursor.fetchall()
-        print(result)
-        print(f'Length: {len(result)}')
-
-    def truncate_table(self) -> None:
-        '''
-        Delete api table data.
-
-        Parameters: None
-
-        Returns: None
-        '''
-        self.cursor.execute("TRUNCATE api")
-        self.conn.commit()
 
     def close_connection(self) -> None:
         '''
