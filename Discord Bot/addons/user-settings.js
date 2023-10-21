@@ -1,4 +1,4 @@
-const { pool } = require('./data/db.js');
+//const { pool } = require('./data/db.js');
 //Default Values
 let color = "`0xE80231`",
     links = "`YES`",
@@ -21,19 +21,7 @@ let isDefault = {
     recentGrades: "",
 }
 
-setValues()
 
-async function setValues() {
-    try {
-        const res = await pool.query(
-            "INSERT INTO bot_settings (discord_id, color, showlinks, showgrades, pastgrades) VALUES ($1, $2, $3, $4, $5)",
-            [id, color, showLinks, showGrades, pastGrades]
-        );
-        console.log(`Added a user with ID: ${id}`);
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 
 updateDefaults();
