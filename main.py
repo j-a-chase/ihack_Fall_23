@@ -13,6 +13,9 @@ from reader import Reader as R
 from writer import Writer as W
 import re
 import time
+from os import system
+
+cls = lambda: system('cls')
 
 def main() -> None:
     '''
@@ -58,4 +61,5 @@ def main() -> None:
 if __name__ == '__main__':
     while True:
         main()
-        time.sleep(3600)
+        time.sleep(120)
+        cls()
