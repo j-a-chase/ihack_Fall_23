@@ -118,6 +118,32 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
         },
+        changeHistory: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Error Changing Grade History',
+            description: 'Not enough arguments. Make sure to include a number in days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
+        setHistory: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Grade History Changed',
+            description: 'The number of days your grade history will go back is `?` days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
         setKey: {
             color: userSettings.embedColor,
             title: 'Canvas LMS | Changed API Key',
