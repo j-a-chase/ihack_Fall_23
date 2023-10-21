@@ -113,11 +113,15 @@ client.on('messageCreate', message => {
                     } else {
                         db.loadSettings(message.author.id).then(r => {
                             let embed = embedMSG.settings.mainEmbed;
-                            console.log(r);
-                            if (!r.apikey) embed.fields[0].value = `Please provide an API Key.`;
-                            if (r.showlinks != "YES") embed.fields[2].value = `\`${r.showlinks}\``
-                            if (r.showgrades != "YES") embed.fields[3].value = `\`${r.showgrades}\``
-                            if (r.pastgrades != 14) embed.fields[4].value = `from the last \`${r.pastgrades}\` days.`
+                            r = r[0];
+                            if (r.apikey == 'NONE' || r.apikey == undefined) {
+                                embed.fields[0].value = `Please provide an API Key.`;
+                            } else {
+                                embed.fields[0].value = `*This content is not displayed for security purposes.*`;
+                            }
+                            embed.fields[2].value = `\`${r.showlinks}\``;
+                            embed.fields[3].value = `\`${r.showgrades}\``;
+                            embed.fields[4].value = `from the last \`${r.pastgrades}\` days.`;
                             message.channel.send({embeds: [embed]});
                         })
                         

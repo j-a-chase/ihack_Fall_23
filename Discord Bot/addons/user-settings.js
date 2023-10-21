@@ -19,14 +19,7 @@ let isDefault = {
     grades: "",
     recentGrades: "",
 }
-let userSettings = {
-    embedColor: parseInt(color.split("`")[1]),
-    color: color + isDefault.color,
-    links: links + isDefault.links,
-    grades: grades + isDefault.grades,
-    recentGrades: "`"+recentGrades+"`" + " days" + isDefault.recentGrades,
-    apiKey: apiKey,
-}
+
 
 async function fetchSettings(c,l,g,r) {
     color = `\`${c}\``;
@@ -54,6 +47,13 @@ async function updateDefaults() {
 async function finalizeSettings() {
     updateDefaults();
 }
-
+let userSettings = {
+    embedColor: parseInt(color.split("`")[1]),
+    color: color + isDefault.color,
+    links: links + isDefault.links,
+    grades: grades + isDefault.grades,
+    recentGrades: "`"+recentGrades+"`" + " days" + isDefault.recentGrades,
+    apiKey: apiKey,
+}
 
 module.exports = { userSettings, defaults, fetchSettings, finalizeSettings};
