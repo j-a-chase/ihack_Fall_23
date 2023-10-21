@@ -179,6 +179,19 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
         },
+        invalidHistoryArg: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Error Changing Grade History',
+            description: 'Invalid arguments. Make sure to include a number in days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
         setHistory: {
             color: userSettings.embedColor,
             title: 'Canvas LMS | Grade History Changed',
@@ -494,6 +507,71 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
         },
-    }
+    },
+    assignmentNotifier: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Upcoming Assignments (Automatically Generated)',
+            description: 'A list of assignments due in the next seven (7) days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            fields: [
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                }
+            ],
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+    },
 }
 module.exports= { embedMSG ,updateSettings};
