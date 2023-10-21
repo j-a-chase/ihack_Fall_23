@@ -11,6 +11,8 @@
 # imports
 import mysql.connector as sql
 from typing import Dict, List
+from dotenv import load_dotenv
+import os
 
 class Writer():
     def __init__(self) -> None:
@@ -23,15 +25,23 @@ class Writer():
         '''
         # initialize connection to the database
         print('Connecting...')
-        config = {
-            'host': 'system.bruh.uno',
-            'user': 'canvasjs',
-            'password': 'ihack2023',
-            'database': 'canvas',
-            "auth_plugin": "caching_sha2_password"
-        }
+
+        # load environment variables
+        load_dotenv()
+
+        # store variables
+        host = os.getenv("HOST")
+        user = os.getenv("USER")
+        password = os.getenv("PSWD")
+        database = os.getenv("DB")
+        auth = os.getenv("AUTH")
+
         try:
-            self.conn = sql.connect(**config)
+            self.conn = sql.connect(host=host,
+                                    user=user,
+                                    password=password,
+                                    database=database,
+                                    auth_plugin=auth)
             if self.conn.is_connected(): print('Connected.')
         except sql.Error as e:
             print(e)
