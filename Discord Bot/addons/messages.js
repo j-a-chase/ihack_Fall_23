@@ -83,6 +83,14 @@ const embedMSG = {
                 {
                     name: '`.upcoming`',
                     value: 'Displays upcoming assignments for the next 7 days for currently enrolled classes.'
+                },
+                {
+                    name: '`.notifications`',
+                    value: 'Must be set to either `on` or `off`.'
+                },
+                {
+                    name: '`.dnd [optional_parameter]`',
+                    value: 'Toggles Do Not Disturb on or off -> optional_parameter = [on / off].'
                 }
             ],
             timestamp: new Date().toISOString(),
