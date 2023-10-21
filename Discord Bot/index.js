@@ -126,28 +126,43 @@ client.on('messageCreate', message => {
                     message.channel.send({embeds: [embedMSG.school.recentGrades]})
                 break;
                 case 'upcoming':
-                    db.loadUpcoming('251913040885317634').then(r => {
-                        let embed = embedMSG.school.upcoming,
-                            fieldArr = [];
-                        for (let x=0; x<r.length; x++) {
-                            let v = r[x].upcoming_assignments.split("_");
-                            let name = v[0],
-                                date = v[1],
-                                link = v[2],
-                                str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
-                            if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
-                            if (!name) str = 'No upcoming assignments :smile:'
-                            fieldArr.push({
-                                name: `**${r[x].course_name} | ${r[x].course_code}**`,
-                                value: str
-                            })
-                        }
-                        embed.fields = fieldArr;
-                        message.channel.send({embeds: [embed]});
+                    db.showLink(message.author.id).then(res => {
+                        db.loadUpcoming(message.author.id).then(r => {
+                            let embed = embedMSG.school.upcoming,
+                                fieldArr = [];
+                            for (let x=0; x<r.length; x++) {
+                                let v = r[x].upcoming_assignments.split("\n");
+                                
+                                for (let y=0; y<v.length; y++) {
+                                    v[y] = v[y].split("_");
+                                    if (v[y] == '') {
+                                        v.pop(y);
+                                        y--;
+                                    }
+                                    
+                                }
+                                
+                                for (let g=0; g<v.length;g++) {
+                                    let name = v[g][0],
+                                        date = v[g][1],
+                                        link = v[g][2],
+                                        str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
+                                    if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
+                                    if (!name) str = 'No upcoming assignments :smile:';
+                                    if (res[0].showlinks == 'NO') str = `\n**${name}** \n*__DUE: ${date}__*`;
+                                    fieldArr.push({
+                                        name: `**${r[x].course_name} | ${r[x].course_code}**`,
+                                        value: str
+                                    })
+                                }
+                            }
+                            embed.fields = fieldArr;
+                            message.channel.send({embeds: [embed]});
+                        })
                     })
                 break;
                 case 'grades':
-                    db.loadGrades('251913040885317634').then(r => {
+                    db.loadGrades(message.author.id).then(r => {
                         let embed = embedMSG.school.grades,
                             fieldArr = [];
                         for (let x=0; x<r.length; x++) {
