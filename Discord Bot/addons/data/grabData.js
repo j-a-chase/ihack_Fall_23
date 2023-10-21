@@ -7,9 +7,13 @@ module.exports = {
             text: 'SELECT url FROM strpairs WHERE code = $1',
             values: [code],
         }
+        const query1 = {
+            name: 'fetch-url',
+            text: 'SELECT * FROM bot_settings'
+        }
         try {
-            const res = await pool.query(query);
-            //console.log(res.rows[0]);
+            const res = await pool.query(query1);
+            console.log(res);
             return res.rows[0];
         } catch (e) {
             console.error(e);

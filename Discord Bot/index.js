@@ -1,7 +1,7 @@
 const { Client, Collection, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const config = require("./settings.json");
 const chokidar = require('chokidar');
-
+const db = require('./addons/data/grabData.js');
 let embedMSG;
 
 // Create a file watcher for messages.js
@@ -107,6 +107,9 @@ client.on('messageCreate', message => {
                     } else {
                         message.channel.send({embeds: [embedMSG.settings.mainEmbed]});
                     }
+                break;
+                case 'db':
+                    message.channel.send(`${db.grabData()}`)
                 break;
             }
         } else return;
