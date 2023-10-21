@@ -63,6 +63,7 @@ client.on('messageCreate', message => {
         db.loadSettings(message.author.id).then(settings => {
             settings = settings[0];
             if (typeof settings.color == 'string') settings.color = parseInt(settings.color,16);
+            console.log(settings.color);
             if (message.guildId != null) {
                 switch (command) {
                     case 'help':
@@ -125,6 +126,24 @@ client.on('messageCreate', message => {
                                     embed.color = settings.color;
                                 message.channel.send({embeds: [embed]});
                             }
+                        } else if (args[1] == "set" && args[2] == "history" && args[3]) {
+                            args[3] = Number(args[3]);
+                            if (typeof args[3] === "number" && 2<=args[3]<=14) {
+                                db.setHistory(message.author.id, args[3]).then(r => {
+                                    let embed = embedMSG.settings.setHistory;
+                                    embed.color = settings.color;
+                                    embed.description = `The number of days your grade history will go back is \`${args[3]}\` days.`
+                                    message.channel.send({embeds: [embed]});
+                                })
+                            } else {
+                                /*let embed = embedMSG.settings.invalidHistoryArg;
+                                    embed.color = settings.color;
+                                message.channel.send({embeds: [embed]});*/
+                            }
+                        } else if (args[1] == "set" && args[2] == "history") {
+                            let embed = embedMSG.settings.changeHistory;
+                                embed.color = settings.color;
+                            message.channel.send({embeds: [embed]});
                         } else if (args[1] == "set" && args[2] == "key") {
                             let embed = embedMSG.settings.changeKey;
                                 embed.color = settings.color;
