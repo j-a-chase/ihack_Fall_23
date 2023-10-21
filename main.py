@@ -11,6 +11,7 @@
 # imports
 from reader import Reader as R
 from writer import Writer as W
+import re
 
 def main() -> None:
     '''
@@ -29,6 +30,11 @@ def main() -> None:
     # for each id and token
     for d_id, token in zip(w.get_discord_ids(), w.get_keys()):
         
+        # ensure token is valid
+        if len(token) != 70: continue
+        pattern = re.compile(r'^\d{5}~\w{64}$')
+        if re.match(pattern, token) is None: continue
+
         # create an API reader object
         r = R(token)
 
