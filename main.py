@@ -10,24 +10,19 @@
 
 # imports
 from reader import Reader as R
+from writer import Writer as W
 
 def main() -> None:
-    print()
-    while True:
-        token = input("Token: ")
-        if len(token) == 70: break
-    r = R(token)
-    for cid in r.get_course_ids():
-        r.get_upcoming_assignments(cid)
-        r.get_past_assignments(cid, 14)
-    # print()
-    # for k, v in r.courses.items():
-    #     print(f'{k}: {v[:-1]}')
-    #     print('Upcoming:')
-    #     for a in v[-1]['upcoming_assignments']: print(f'\t{a}')
-    #     print('Past Assignments:')
-    #     for a in v[-1]['past_assignments']: print(f'\t{a}')
-    #     print()
-    print()
+    w = W()
+    w.read_user_info()
+    for d_id, token in zip(w.d_ids, w.keys):
+        r = R(token)
+        for cid in r.get_course_ids():
+            r.get_upcoming_assignments(cid)
+            r.get_past_assignments(cid, 14)
+
+        w.write_info(r.courses, r.get_course_ids(), d_id)
+    w.get_table_data()
+    w.close_connection()
 
 if __name__ == '__main__': main()
