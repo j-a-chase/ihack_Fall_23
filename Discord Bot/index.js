@@ -77,8 +77,9 @@ client.on('messageCreate', message => {
                             message.channel.send({embeds: [embedMSG.settings.setKey]});
                         })
                     } else if (args[1] == "set" && args[2] == "color" && args[3]) {
-                        // Add checks to make sure the API key is valid & save the keyvalue pair in the database.
-                        message.channel.send({embeds: [embedMSG.settings.setColor]});
+                        db.setColor(message.author.id, args[3]).then(r => {
+                            message.channel.send({embeds: [embedMSG.settings.setColor]});
+                        })
                     } else if (args[1] == "set" && args[2] == "links" && args[3]) {
                         if (args[3] == "show") {
                             db.linkVisibility(message.author.id, "YES").then(r => {
