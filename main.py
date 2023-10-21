@@ -37,7 +37,7 @@ def main() -> None:
             
             # grab upcoming and past assignments
             r.get_upcoming_assignments(cid)
-            r.get_past_assignments(cid, 14)
+            r.get_past_assignments(cid, w.days_ago)
 
         # write / update assignment information
         w.write_info(r.courses, r.get_course_ids(), d_id)
