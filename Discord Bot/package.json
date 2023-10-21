@@ -13,6 +13,7 @@
     "chokidar": "^3.5.3",
     "discord.js": "^14.13.0",
     "mysql": "^2.18.1",
+    "node-cron": "^3.0.2",
     "pg": "^8.11.3",
     "utf-8-validate": "^6.0.3",
     "zlib-sync": "^0.1.8"

@@ -2,7 +2,9 @@ const { Client, Collection, EmbedBuilder, GatewayIntentBits, Partials } = requir
 const config = require("./settings.json");
 const chokidar = require('chokidar');
 const db = require('./addons/data/server.js');
+const cron = require('node-cron');
 let embedMSG;
+
 
 // Create a file watcher for messages.js
 const watcher = chokidar.watch('./addons/messages.js');
@@ -61,9 +63,51 @@ client.on('messageCreate', message => {
         const command = args[0];
         if (message.author.bot == true) return;
         db.loadSettings(message.author.id).then(settings => {
+
+            let assignmentNotifier = cron.schedule('*/15 * * * * *', () => {
+                console.log('Running a job for :' + message.author.id);
+                db.showLink(message.author.id).then(res => {
+                            db.loadUpcoming(message.author.id).then(r => {
+                                let embed = embedMSG.assignmentNotifier,
+                                    fieldArr = [];
+                                    embed.color = settings.color;
+                                for (let x=0; x<r.length; x++) {
+                                    let v = r[x].upcoming_assignments.split("\n");
+                                    
+                                    for (let y=0; y<v.length; y++) {
+                                        v[y] = v[y].split("_");
+                                        if (v[y] == '') {
+                                            v.pop(y);
+                                            y--;
+                                        }
+                                        
+                                    }
+                                    
+                                    for (let g=0; g<v.length;g++) {
+                                        let name = v[g][0],
+                                            date = v[g][1],
+                                            link = v[g][2],
+                                            str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
+                                        if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
+                                        if (!name) str = 'No upcoming assignments :smile:';
+                                        if (res[0].showlinks == 'NO') str = `\n**${name}** \n*__DUE: ${date}__*`;
+                                        fieldArr.push({
+                                            name: `**${r[x].course_name} | ${r[x].course_code}**`,
+                                            value: str
+                                        })
+                                    }
+                                }
+                                embed.fields = fieldArr;
+                                message.channel.send({embeds: [embed]});
+                            })
+                })
+            }, {
+                scheduled: true,
+                timezone: "America/Denver"
+            })
+
             settings = settings[0];
             if (typeof settings.color == 'string') settings.color = parseInt(settings.color,16);
-            console.log(settings.color);
             if (message.guildId != null) {
                 switch (command) {
                     case 'help':
@@ -83,6 +127,8 @@ client.on('messageCreate', message => {
                                 let embed = embedMSG.settings.setKey;
                                 embed.color = settings.color;
                                 message.channel.send({embeds: [embed]});
+                                assignmentNotifier.stop();
+                                assignmentNotifier.start();
                             })
                         } else if (args[1] == "set" && args[2] == "color" && args[3]) {
                             db.setColor(message.author.id, args[3]).then(r => {
@@ -128,18 +174,15 @@ client.on('messageCreate', message => {
                             }
                         } else if (args[1] == "set" && args[2] == "history" && args[3]) {
                             args[3] = Number(args[3]);
-                            if (typeof args[3] === "number" && 2<=args[3]<=14) {
+                            if (Number.isNaN(args[3]) == true) args[3] = 14;
+                            if (typeof args[3] === "number" && 1<args[3]<15) {
                                 db.setHistory(message.author.id, args[3]).then(r => {
                                     let embed = embedMSG.settings.setHistory;
                                     embed.color = settings.color;
                                     embed.description = `The number of days your grade history will go back is \`${args[3]}\` days.`
                                     message.channel.send({embeds: [embed]});
                                 })
-                            } else {
-                                /*let embed = embedMSG.settings.invalidHistoryArg;
-                                    embed.color = settings.color;
-                                message.channel.send({embeds: [embed]});*/
-                            }
+                            } 
                         } else if (args[1] == "set" && args[2] == "history") {
                             let embed = embedMSG.settings.changeHistory;
                                 embed.color = settings.color;
