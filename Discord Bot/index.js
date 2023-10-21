@@ -126,15 +126,40 @@ client.on('messageCreate', message => {
                     message.channel.send({embeds: [embedMSG.school.recentGrades]})
                 break;
                 case 'upcoming':
-                    message.channel.send({embeds: [embedMSG.school.upcoming]})
+                    db.loadUpcoming('251913040885317634').then(r => {
+                        let embed = embedMSG.school.upcoming,
+                            fieldArr = [];
+                        for (let x=0; x<r.length; x++) {
+                            let v = r[x].upcoming_assignments.split("_");
+                            let name = v[0],
+                                date = v[1],
+                                link = v[2],
+                                str = `\n**${name}** \n*__DUE: ${date}__* \n${link}`;
+                            if (r[x].upcoming_assignments == '') r[x].upcoming_assignments = "No new assignments for the next 7 days.";
+                            if (!name) str = 'No upcoming assignments :smile:'
+                            fieldArr.push({
+                                name: `**${r[x].course_name} | ${r[x].course_code}**`,
+                                value: str
+                            })
+                        }
+                        embed.fields = fieldArr;
+                        message.channel.send({embeds: [embed]});
+                    })
                 break;
                 case 'grades':
                     db.loadGrades('251913040885317634').then(r => {
-                        let embed = embedMSG.school.grades;
-                        console.log(r.length);
+                        let embed = embedMSG.school.grades,
+                            fieldArr = [];
                         for (let x=0; x<r.length; x++) {
-                            console.log(r[x].course_name);
+                            if (r[x].course_letter_grade == null) r[x].course_letter_grade = "N/A";
+                            if (r[x].course_score == null) r[x].course_score = "N/A";
+                            fieldArr.push({
+                                name: `**${r[x].course_name}: ${r[x].course_letter_grade}**`,
+                                value: `Computed Score: ${r[x].course_score}`,
+                                inline: true
+                            })
                         }
+                        embed.fields = fieldArr;
                         message.channel.send({embeds: [embed]});
                     })
                 break;

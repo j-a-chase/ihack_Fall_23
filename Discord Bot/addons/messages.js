@@ -330,7 +330,7 @@ const embedMSG = {
         },
         upcoming: {
             color: userSettings.embedColor,
-            title: 'Canvas LMS | Upcoing Assignments ',
+            title: 'Canvas LMS | Upcoming Assignments ',
             description: 'A list of assignments due in the next seven (7) days.',
             thumbnail: {
                 url: config.logoURL,
