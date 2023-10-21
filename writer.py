@@ -9,43 +9,39 @@
 ######################################################################################################################################################
 
 # imports
-import psycopg2
-import sys
+import mysql.connector as sql
 
-class Writer:
+class Writer():
     def __init__(self) -> None:
         print('Connecting...')
-        try:
-            self.conn = psycopg2.connect(
-                database="canvasjs",
-                host="system.bruh.uno",
-                user="canvaspy",
-                password="pyhack2023",
-                port=9852,
-                connect_timeout=10
-            )
-            self.cursor = self.conn.cursor()
-        except psycopg2.Error as e:
-            print("Error connecting to the database:", e)
-            sys.exit(1)
-        print('Connected.')
 
-    def _read_table_data(self) -> None:
-        print('Querying...')
+        config = {
+            'host': 'system.bruh.uno',
+            'user': 'canvasjs',
+            'password': 'ihack2023',
+            'database': 'canvas',
+            "auth_plugin": "caching_sha2_password"
+        }
         try:
-            self.cursor.execute('SELECT * FROM bot_settings')
-            print(self.cursor.fetchall())
-        except psycopg2.Error as e: print("Error executing query:", e)
-        print('Queried.')
+            self.conn = sql.connect(**config)
+            if self.conn.is_connected(): print('Connected.')
+        except sql.Error as e:
+            print(e)
+            exit(1)
+
+        self.cursor = self.conn.cursor()
+
+    def print_table(self, table_name) -> None:
+        self.cursor.execute(f"SHOW columns FROM {table_name}")
+        print(self.cursor.fetchall())
 
     def close_connection(self) -> None:
-        print('Closing Connection...')
-        if self.conn: self.conn.close()
-        print('Connection Closed.')
+        print('Closing connection...')
+        self.conn.close()
+        print('Connection closed.')
 
 if __name__ == '__main__':
-    db = Writer()
-    db._read_table_data()
-    db.close_connection()
-
+    w = Writer()
+    w.print_table('')
+    w.close_connection()
     # assert False, 'This is a class file. Please import into another file'
