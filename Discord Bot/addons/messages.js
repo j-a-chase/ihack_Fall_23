@@ -34,15 +34,55 @@ const embedMSG = {
     direct: {
         helpEmbed: {
             color: userSettings.embedColor,
-            title: 'Canvas LMS - BYUI - DM',
+            title: 'Canvas LMS | Help',
             description: 'See a list of commands and valid arguments.',
             thumbnail: {
                 url: config.logoURL,
             },
             fields: [
                 { 
-                    name: '`help`', 
+                    name: '`.help`',
                     value: 'Displays this menu.'
+                },
+                {
+                    name: '`.settings`',
+                    value: 'Displays user settings.'
+                },
+                {
+                    name: '`.settings set [parameter] [value]`',
+                    value: 'Modifies the specified settings parameter with the given value'
+                },
+                {
+                    name: '`.settings set key`',
+                    value: 'Must be set to a valid 70-character long API access token'
+                },
+                {
+                    name: '`.settings set color`',
+                    value: 'Must be set to a valid hex color (ex: 00ff00).'
+                },
+                {
+                    name: '`.settings set links`',
+                    value: 'Must be set to either `show` or `hide`.'
+                },
+                {
+                    name: '`.settings set grades`',
+                    value: 'Must be set to either `show` or `hide`.'
+                },
+                {
+                    name: '`.settings set history`',
+                    value: 'Must be set to a number between (2-14)'
+                },
+                {
+                    name: '`.grades`',
+                    value: 'Displays grades for currently enrolled classes. Only works if .settings > grades is set to "show".'
+                },
+                {
+                    name: '`.recentgrades`',
+                    value: 'Displays recent grades back a certain number of days, determined by .settings > history.'
+                },
+                {
+                    name: '`.upcoming`',
+                    value: 'Displays upcoming assignments for the next 7 days for currently enrolled classes.'
                 }
             ],
             timestamp: new Date().toISOString(),
