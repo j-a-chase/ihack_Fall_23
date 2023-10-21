@@ -16,6 +16,14 @@ from typing import List
 
 class Reader:
     def __init__(self, token: str='') -> None:
+        '''
+        Constructor
+
+        Parameters:
+            - token: a string that contains an api access token
+
+        Returns: None
+        '''
         # base link to API
         self.api = "https://byui.instructure.com/api/v1/"
 
