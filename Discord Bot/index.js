@@ -64,9 +64,10 @@ client.on('messageCreate', message => {
         if (message.author.bot == true) return;
         db.loadSettings(message.author.id).then(settings => {
 
-            let assignmentNotifier = cron.schedule('*/15 * * * * *', () => {
+            let assignmentNotifier = cron.schedule('*/10 * * * * *', () => {
                 console.log('Running a job for :' + message.author.id);
-                db.showLink(message.author.id).then(res => {
+                if (settings.dnd == "ON") {
+                    db.showLink(message.author.id).then(res => {
                             db.loadUpcoming(message.author.id).then(r => {
                                 let embed = embedMSG.assignmentNotifier,
                                     fieldArr = [];
@@ -101,6 +102,10 @@ client.on('messageCreate', message => {
                                 message.channel.send({embeds: [embed]});
                             })
                 })
+                } else {
+                    console.log('User has DND enabled.');
+                }            
+                
             }, {
                 scheduled: true,
                 timezone: "America/Denver"
@@ -340,6 +345,58 @@ client.on('messageCreate', message => {
                             }
                             
                         })
+                    break;
+                    case 'dnd':
+                        let opti = args[1];
+                        if (!opti) {
+                            let newdnd = '';
+                            if (settings.dnd == 'ON') newdnd = 'OFF';
+                            if (settings.dnd == 'OFF' | !settings.dnd) newdnd = 'ON';
+                            db.dndToggle(message.author.id, newdnd).then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your Do Not Disturb settings have been toggled: \`${newdnd}\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        } else if (opti.toLowerCase() == 'on') {
+                            db.dndToggle(message.author.id, 'ON').then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your Do Not Disturb settings have been toggled: \`ON\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        } else if (opti.toLowerCase() == 'off') {
+                            db.dndToggle(message.author.id, 'OFF').then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your Do Not Disturb settings have been toggled: \`OFF\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        }
+                    break;
+                    case 'notifications':
+                        let opt = args[1];
+                        if (!opt) opt = '';
+                        if (opt.toLowerCase() == 'on') {
+                            db.dndToggle(message.author.id, 'ON').then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your Do Not Disturb settings have been toggled: \`ON\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        } else if (opt.toLowerCase() == 'off') {
+                            db.dndToggle(message.author.id, 'OFF').then(r => {
+                                let embed = embedMSG.dnd.dndToggle;
+                                embed.color = settings.color;
+                                embed.description = `Your Do Not Disturb settings have been toggled: \`OFF\`.`;
+                                message.channel.send({embeds: [embed]})
+                            })
+                        } else {
+                            let embed = embedMSG.dnd.dndToggle;
+                            embed.color = settings.color;
+                            embed.description = `Your Do Not Disturb settings have NOT been changed.`;
+                            message.channel.send({embeds: [embed]})
+                        }
                     break;
                 }
             } else return;          
