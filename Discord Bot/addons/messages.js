@@ -1,5 +1,14 @@
-const config = require("../settings.json"),
-      {userSettings} = require("./user-settings.js");
+const config = require("../settings.json");
+let {userSettings} = require("./user-settings.js");
+
+async function updateSettings(c,g,l,r) {
+    userSettings.color = c,
+    userSettings.embedColor = parseInt(c),
+    userSettings.grades = g,
+    userSettings.links = l,
+    userSettings.recentGrades = r
+}
+
 const embedMSG = {
     guilds: {
         helpEmbed: {
@@ -252,6 +261,204 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
         },
+    },
+    school: {
+        recentGrades: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Recent Grades ',
+            description: 'A list of grades received in the last 14 days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            fields: [
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                },
+                { 
+                    name: '**COURSE NAME | COURSE CODE**', 
+                    value: `GRADE`,
+                    inline: true,
+                }
+            ],
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
+        upcoming: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Upcoing Assignments ',
+            description: 'A list of assignments due in the next seven (7) days.',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            fields: [
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Assignment Name | COURSE CODE**', 
+                    value: `DUE: <DATE>\nLINK: <URL>`,
+                    inline: true,
+                }
+            ],
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
+        grades: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Current Course Grades ',
+            description: 'A list of grades and their associated courses..',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            fields: [
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                { 
+                    name: '**Course Name: <GRADE>**', 
+                    value: `<percentage score>`,
+                    inline: true,
+                },
+                
+            ],
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        },
     }
 }
-module.exports= { embedMSG };
+module.exports= { embedMSG ,updateSettings};

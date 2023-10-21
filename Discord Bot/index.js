@@ -1,6 +1,7 @@
 const { Client, Collection, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const config = require("./settings.json");
 const chokidar = require('chokidar');
+const db = require('./addons/data/server.js');
 let embedMSG;
 
 // Create a file watcher for messages.js
@@ -72,16 +73,21 @@ client.on('messageCreate', message => {
                 break;
                 case 'settings':
                     if (args[1] == "set" && args[2] == "key" && args[3]) {
-                        // Add checks to make sure the API key is valid & save the keyvalue pair in the database.
-                        message.channel.send({embeds: [embedMSG.settings.setKey]});
+                        db.addKey(message.author.id,args[3]).then(r => {
+                            message.channel.send({embeds: [embedMSG.settings.setKey]});
+                        })
                     } else if (args[1] == "set" && args[2] == "color" && args[3]) {
                         // Add checks to make sure the API key is valid & save the keyvalue pair in the database.
                         message.channel.send({embeds: [embedMSG.settings.setColor]});
                     } else if (args[1] == "set" && args[2] == "links" && args[3]) {
                         if (args[3] == "show") {
-                            message.channel.send({embeds: [embedMSG.settings.setShowLinks]});
+                            db.linkVisibility(message.author.id, "YES").then(r => {
+                                message.channel.send({embeds: [embedMSG.settings.setShowLinks]});
+                            })
                         } else if (args[3] == "hide") {
-                            message.channel.send({embeds: [embedMSG.settings.setHideLinks]});
+                            db.linkVisibility(message.author.id, "NO").then(r => {
+                                message.channel.send({embeds: [embedMSG.settings.setHideLinks]});
+                            })
                         } else {
                             message.channel.send({embeds: [embedMSG.settings.invalidLinkSetting]});
                         }
@@ -104,23 +110,33 @@ client.on('messageCreate', message => {
                     } else if (args[1] == "set" && !args[2]) {
                         message.channel.send({embeds: [embedMSG.settings.changeSetting]});
                     } else {
-                        message.channel.send({embeds: [embedMSG.settings.mainEmbed]});
+                        db.loadSettings(message.author.id).then(r => {
+                            let embed = embedMSG.settings.mainEmbed;
+                            console.log(r);
+                            if (!r.apikey) embed.fields[0].value = `Please provide an API Key.`;
+                            if (r.showlinks != "YES") embed.fields[2].value = `\`${r.showlinks}\``
+                            if (r.showgrades != "YES") embed.fields[3].value = `\`${r.showgrades}\``
+                            if (r.pastgrades != 14) embed.fields[4].value = `from the last \`${r.pastgrades}\` days.`
+                            message.channel.send({embeds: [embed]});
+                        })
+                        
                     }
                 break;
-                case 'db':
-                    async function something() {
-                        try {
-                            const data = await grabData.grabData(); // This will await the result of grabData
-                            // Use the data here
-                            console.log(data);
-                        } catch (error) {
-                            // Handle any errors that occur during the grabData operation
-                            console.error(error);
+                case 'recentgrades':
+                    message.channel.send({embeds: [embedMSG.school.recentGrades]})
+                break;
+                case 'upcoming':
+                    message.channel.send({embeds: [embedMSG.school.upcoming]})
+                break;
+                case 'grades':
+                    db.loadGrades('251913040885317634').then(r => {
+                        let embed = embedMSG.school.grades;
+                        console.log(r.length);
+                        for (let x=0; x<r.length; x++) {
+                            console.log(r[x].course_name);
                         }
-                    }
-
-                    // Call the async function
-                    something();
+                        message.channel.send({embeds: [embed]});
+                    })
                 break;
             }
         } else return;
