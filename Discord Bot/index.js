@@ -1,7 +1,8 @@
 const { Client, Collection, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const config = require("./settings.json");
 const chokidar = require('chokidar');
-const db = require('./addons/data/grabData.js');
+const grabData = require('./addons/data/grabData.js'),
+      insertData= require('./addons/data/insertData.js')
 let embedMSG;
 
 // Create a file watcher for messages.js

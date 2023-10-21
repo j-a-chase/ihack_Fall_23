@@ -13,7 +13,6 @@ module.exports = {
         }
         try {
             const res = await pool.query(query1);
-            console.log(res);
             return res.rows[0];
         } catch (e) {
             console.error(e);
