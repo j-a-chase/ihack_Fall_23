@@ -1,4 +1,4 @@
 Discord*Bot/node_modules/
 Discord*Bot/settings.json
 __pycache__
-Discord*Bot/addons/data/db.js
+Discord*Bot/addons/data/server.js
