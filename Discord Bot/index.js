@@ -67,6 +67,7 @@ client.on('messageCreate', message => {
         const notifier = cron.schedule('*/10 * * * * *', () => {
             db.loadSettings(message.author.id).then(settings => {
             console.log('Running a job for :' + message.author.id + " DND SETTINGS: " + settings[0].dnd);
+            if (typeof settings.color == 'string') settings.color = parseInt(settings.color, 16);
             if (settings[0].dnd == "OFF" && settings[0].apikey != 'NONE') {
                 db.showLink(message.author.id).then(res => {
                         db.loadUpcoming(message.author.id).then(r => {
