@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from typing import List
 
 class Reader:
-    def __init__(self, token: str=''):
+    def __init__(self, token: str='') -> None:
         # base link to API
         self.api = "https://byui.instructure.com/api/v1/"
 
