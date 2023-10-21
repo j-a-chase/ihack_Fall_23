@@ -36,6 +36,7 @@ def main() -> None:
         pattern = re.compile(r'^\d{5}~\w{64}$')
         if re.match(pattern, token) is None: continue
 
+        print('Reading...')
         # create an API reader object
         r = R(token)
 
@@ -46,6 +47,7 @@ def main() -> None:
             r.get_upcoming_assignments(cid)
             r.get_past_assignments(cid, w.get_days_ago())
 
+        print('Updating...')
         # write / update assignment information
         w.write_info(r.get_courses_dict(), r.get_course_ids(), d_id)
 
