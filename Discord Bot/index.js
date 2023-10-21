@@ -3,6 +3,7 @@ const config = require("./settings.json");
 const chokidar = require('chokidar');
 const db = require('./addons/data/server.js');
 const cron = require('node-cron');
+
 let embedMSG;
 
 
