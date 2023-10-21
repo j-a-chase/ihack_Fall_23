@@ -15,8 +15,17 @@ def main() -> None:
     print()
     token = input("Token: ")
     r = R(token)
-    print()
-    for k, v in r.courses.items(): print(f'{k}: {v}\n')
+    for cid in r.get_course_ids():
+        r.get_upcoming_assignments(cid)
+        r.get_past_assignments(cid, 14)
+    # print()
+    # for k, v in r.courses.items():
+    #     print(f'{k}: {v[:-1]}')
+    #     print('Upcoming:')
+    #     for a in v[-1]['upcoming_assignments']: print(f'\t{a}')
+    #     print('Past Assignments:')
+    #     for a in v[-1]['past_assignments']: print(f'\t{a}')
+    #     print()
     print()
 
 if __name__ == '__main__': main()
