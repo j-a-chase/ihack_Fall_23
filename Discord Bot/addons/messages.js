@@ -573,5 +573,20 @@ const embedMSG = {
                 iconURL: config.logoURL,
             },
     },
+    dnd: {
+        dndToggle: {
+            color: userSettings.embedColor,
+            title: 'Canvas LMS | Do Not Disturb',
+            description: '',
+            thumbnail: {
+                url: config.logoURL,
+            },
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: 'A BYU-Idaho Hackathon Project',
+                iconURL: config.logoURL,
+            },
+        }
+    }
 }
 module.exports= { embedMSG ,updateSettings};
