@@ -48,7 +48,7 @@ async function finalizeSettings() {
     updateDefaults();
 }
 let userSettings = {
-    embedColor: parseInt(color.split("`")[1]),
+    embedColor: color.split("`")[1],
     color: color + isDefault.color,
     links: links + isDefault.links,
     grades: grades + isDefault.grades,

@@ -66,6 +66,14 @@ client.on('ready', () => {
             });
         } 
     });
+    db.checkTableExists('api').then(exists => {
+        if (exists == false) {
+            console.log('Table "api" does not exist.');
+            db.createTable('api').then(r => {
+                console.log('Created table: "api".');
+            });
+        } 
+    });
 });
 
 client.on('messageCreate', message => {
@@ -141,13 +149,14 @@ client.on('messageCreate', message => {
                     break;
                     case 'settings':
                         if (args[1] == "set" && args[2] == "key" && args[3]) {
+                            
                             db.addKey(message.author.id,args[3]).then(r => {
                                 let embed = embedMSG.settings.setKey;
                                 embed.color = settings.color;
                                 message.channel.send({embeds: [embed]});
                                 //notifier.stop();
                                 //notifier.start();
-                            })
+                            });
                         } else if (args[1] == "set" && args[2] == "color" && args[3]) {
                             db.setColor(message.author.id, args[3]).then(r => {
                                 let embed = embedMSG.settings.setColor;
@@ -420,7 +429,6 @@ client.on('messageCreate', message => {
                 }
             } else return;          
         })
-        
     } 
 });
 

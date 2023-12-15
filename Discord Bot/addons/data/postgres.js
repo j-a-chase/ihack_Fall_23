@@ -4,13 +4,17 @@ const { Client } = require('pg'),
       util = require('util'),
       dotenv = require('dotenv');
 
-dotenv.config({path:'../../.env'});
+const result = dotenv.config({path:'./.env'});
+
+if (result.error) {
+  throw result.error;
+}
 
 const client = new Client({
-  user: process.env.USER,
-  host: process.env.HOST,
-  database: process.env.DB,
-  password: process.env.PSWD,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PSWD,
   port: 5432,
 });
 
@@ -36,6 +40,7 @@ async function checkTableExists(tableName) {
 connectToDatabase();
 
 module.exports = {
+  // Table: bot_settings
     loadSettings: async function init(userID) {
       try {
         const query = 'SELECT * FROM bot_settings WHERE discord_id = $1';
@@ -111,6 +116,7 @@ module.exports = {
         console.log('Updated Grade Visibility for user: ' + userID);
       });
     },
+    // Table: api
     loadGrades: async function courseGrades(userID) {
       try {
         const query = 'SELECT course_name, course_letter_grade, course_score FROM api WHERE discord_id = $1';
