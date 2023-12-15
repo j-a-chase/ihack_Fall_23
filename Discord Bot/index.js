@@ -1,7 +1,7 @@
 const { Client, Collection, EmbedBuilder, GatewayIntentBits, Partials } = require('discord.js');
 const config = require("./settings.json");
 const chokidar = require('chokidar');
-const db = require('./addons/data/server.js');
+const db = require('./addons/data/postgres');
 const cron = require('node-cron');
 
 let embedMSG;
@@ -57,6 +57,15 @@ const client = new Client({
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Running Database Checks.`);
+    db.checkTableExists('bot_settings').then(exists => {
+        if (exists == false) {
+            console.log('Table "bot_settings" does not exist.');
+            db.createTable('bot_settings').then(r => {
+                console.log('Created table: "bot_settings".');
+            });
+        } 
+    });
 });
 
 client.on('messageCreate', message => {
@@ -65,7 +74,7 @@ client.on('messageCreate', message => {
         args = args.split(' ');
         const command = args[0];
         if (message.author.bot == true) return;
-        const notifier = cron.schedule('*/10 * * * * *', () => {
+        /*const notifier = cron.schedule('*//*10 * * * * *', () => {
             db.loadSettings(message.author.id).then(settings => {
             console.log('Running a job for :' + message.author.id + " DND SETTINGS: " + settings[0].dnd);
             if (typeof settings.color == 'string') settings.color = parseInt(settings.color, 16);
@@ -112,7 +121,7 @@ client.on('messageCreate', message => {
         }, {
             scheduled: true,
             timezone: "America/Denver"
-        })
+        });*/
         db.loadSettings(message.author.id).then(settings => {
             settings = settings[0];
             if (typeof settings.color == 'string') settings.color = parseInt(settings.color,16);
@@ -123,7 +132,7 @@ client.on('messageCreate', message => {
                     break;
                 }
             } else if (message.guildId == null) {
-                notifier.stop();
+                //notifier.stop();
                 switch (command) {
                     case 'help':
                         let embed = embedMSG.direct.helpEmbed;
@@ -136,8 +145,8 @@ client.on('messageCreate', message => {
                                 let embed = embedMSG.settings.setKey;
                                 embed.color = settings.color;
                                 message.channel.send({embeds: [embed]});
-                                notifier.stop();
-                                notifier.start();
+                                //notifier.stop();
+                                //notifier.start();
                             })
                         } else if (args[1] == "set" && args[2] == "color" && args[3]) {
                             db.setColor(message.author.id, args[3]).then(r => {
@@ -382,7 +391,7 @@ client.on('messageCreate', message => {
                         let opt = args[1];
                         if (!opt) opt = '';
                         if (opt.toLowerCase() == 'on') {
-                            notifier.stop();
+                            //notifier.stop();
                             db.dndToggle(message.author.id, 'OFF').then(r => {
                                 let embed = embedMSG.dnd.dndToggle;
                                 embed.color = settings.color;
@@ -390,7 +399,7 @@ client.on('messageCreate', message => {
                                 message.channel.send({embeds: [embed]})
                             })
                         } else if (opt.toLowerCase() == 'off') {
-                            notifier.stop();
+                            //notifier.stop();
                             db.dndToggle(message.author.id, 'ON').then(r => {
                                 let embed = embedMSG.dnd.dndToggle;
                                 embed.color = settings.color;
@@ -405,7 +414,7 @@ client.on('messageCreate', message => {
                         }
                     break;
                     case 'cronstop':
-                        notifier.stop();
+                        //notifier.stop();
                         message.channel.send('Ended a CRON notification task if it existed for you.');
                     break;
                 }
